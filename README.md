@@ -29,10 +29,11 @@ ecom_store/
 ├── Dockerfile
 ├── .dockerignore
 ├── requirements.txt
-├── models.py
-├── schemas.py
-├── routes.py
-├── store.db
+├── app/
+│    ├── schemas.py
+│    ├── routes.py
+│    ├── store.db
+│    └── models.py
 ├── test/
 │   └── test_routes.py
 └── README.md
@@ -40,11 +41,11 @@ ecom_store/
 
 ## File Responsibilities
 
-`models.py` works with the SQLite database.
+`app/models.py` works with the SQLite database.
 
-`schemas.py` validates incoming data with `marshmallow`.
+`app/schemas.py` validates incoming data with `marshmallow`.
 
-`routes.py` contains Flask routes and starts the application.
+`app/routes.py` contains Flask routes and starts the application.
 
 `test/test_routes.py` contains unit tests for the API.
 
@@ -53,7 +54,7 @@ ecom_store/
 Go to the project folder:
 
 ```bash
-cd /Users/billcarter/Documents/my_project/ecom_store
+cd /Users/my_project/ecom_store
 ```
 
 Start the server:
