@@ -39,6 +39,12 @@ class StoreApiTestCase(unittest.TestCase):
         self.assertEqual(len(response.json), 5)
         self.assertEqual(response.json[0]['name'], 'Books')
 
+    def test_health(self):
+        response = self.client.get('/health')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['status'], 'ok')
+
     def test_create_category(self):
         response = self.client.post('/categories', json={'name': 'Laptops'})
 

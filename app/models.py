@@ -3,9 +3,7 @@ import sqlite3
 from dataclasses import dataclass
 from typing import Optional
 
-DATABASE = 'store.db'
-GOOD_TABLE = 'good'
-CATEGORY_TABLE = 'category'
+from config import DATABASE, GOOD_TABLE, CATEGORY_TABLE
 
 logger = logging.getLogger(__name__)
 

@@ -160,11 +160,16 @@ class CategoryGoods(Resource):
         )
         return goods_schema.dump(goods), 200
 
+class Health(Resource):
+    def get(self):
+        logger.info('GET /health returned ok')
+        return {'status': 'ok'}, 200
 
 api.add_resource(Goods, '/goods')
 api.add_resource(GoodDetail, '/goods/<int:good_id>')
 api.add_resource(Categories, '/categories')
 api.add_resource(CategoryGoods, '/categories/<int:category_id>/goods')
+api.add_resource(Health, '/', '/health')
 
 
 if __name__ == '__main__':

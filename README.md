@@ -9,10 +9,13 @@ The project uses a simple Python stack:
 - `sqlite3`
 - `dataclasses`
 - `marshmallow`
+- `logging`
 - `unittest`
+- `Docker`
 
 ## Features
 
+- health check endpoint
 - get all goods
 - get one good by `id`
 - create a good
@@ -21,6 +24,8 @@ The project uses a simple Python stack:
 - get all categories
 - create a category
 - get goods by category
+- validate request data with Marshmallow
+- log API and database actions
 
 ## Project Structure
 
@@ -28,24 +33,32 @@ The project uses a simple Python stack:
 ecom_store/
 ├── Dockerfile
 ├── .dockerignore
+├── .gitignore
 ├── requirements.txt
+├── README.md
 ├── app/
-│    ├── schemas.py
-│    ├── routes.py
-│    ├── store.db
-│    └── models.py
-├── test/
-│   └── test_routes.py
-└── README.md
+│   ├── __init__.py
+│   ├── config.py
+│   ├── logger_config.py
+│   ├── models.py
+│   ├── schemas.py
+│   └── routes.py
+└── test/
+    ├── README.md
+    └── test_routes.py
 ```
 
 ## File Responsibilities
+
+`app/config.py` stores project constants, such as database and table names.
+
+`app/logger_config.py` configures application logging.
 
 `app/models.py` works with the SQLite database.
 
 `app/schemas.py` validates incoming data with `marshmallow`.
 
-`app/routes.py` contains Flask routes and starts the application.
+`app/routes.py` contains Flask resources, API routes, and app startup code.
 
 `test/test_routes.py` contains unit tests for the API.
 
@@ -54,28 +67,48 @@ ecom_store/
 Go to the project folder:
 
 ```bash
-cd /Users/my_project/ecom_store
+cd /Users/billcarter/Documents/my_project/ecom_store
 ```
 
 Start the server:
 
 ```bash
-.venv/bin/python routes.py
+.venv/bin/python app/routes.py
 ```
 
-After starting the server, the API will be available at:
+The API will be available at:
 
 ```text
 http://127.0.0.1:5000
 ```
 
-When the app starts, it creates the `store.db` database and adds default categories:
+When the app starts, it creates the SQLite database and adds default categories:
 
 - Books
 - Clothes
 - Phones
 - For home
 - Other
+
+## Health Check
+
+```http
+GET /health
+```
+
+Response:
+
+```json
+{
+  "status": "ok"
+}
+```
+
+The same response is also available at:
+
+```http
+GET /
+```
 
 ## Run with Docker
 
@@ -91,10 +124,10 @@ Run the container:
 docker run --rm -p 5000:5000 ecom-store-api
 ```
 
-Then open:
+Check that the app works:
 
 ```text
-http://127.0.0.1:5000/categories
+http://127.0.0.1:5000/health
 ```
 
 If Docker Hub is not available, but you already have a local Python base image, you can override the base image:
@@ -132,6 +165,12 @@ Example category:
 ```
 
 ## API Endpoints
+
+### Get Health Status
+
+```http
+GET /health
+```
 
 ### Get All Goods
 
@@ -211,7 +250,7 @@ GET /categories/3/goods
 
 ## Validation
 
-Data is validated in `schemas.py`.
+Data is validated in `app/schemas.py`.
 
 For goods:
 
@@ -227,16 +266,37 @@ For categories:
 - `name` is required
 - `name` must be at least 2 characters long
 
+## Logging
+
+Logging is configured in `app/logger_config.py`.
+
+The app logs:
+
+- database initialization
+- created goods and categories
+- updated and deleted goods
+- validation errors
+- duplicate records
+- not found responses
+- health check requests
+
+Example log format:
+
+```text
+2026-06-29 10:00:00 | INFO | routes | GET /health returned ok
+```
+
 ## Run Tests
 
 ```bash
 .venv/bin/python -m unittest discover -s test -v
 ```
 
-Tests use a temporary SQLite database and do not change the main `store.db` file.
+Tests use a temporary SQLite database and do not change the main database file.
 
 ## What the Tests Check
 
+- health check
 - getting all categories
 - creating a category
 - duplicate category error

@@ -10,6 +10,7 @@ COPY app/models.py .
 COPY app/schemas.py .
 COPY app/routes.py .
 COPY app/logger_config.py .
+COPY app/config.py .
 
 EXPOSE 5000
 
