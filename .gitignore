@@ -1,0 +1,46 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# SQLite database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Flask
+instance/
+.webassets-cache/
+
+# Environment variables
+.env
+.env.*
+
+# Tests and coverage
+.coverage
+htmlcov/
+.pytest_cache/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Docker
+docker-compose.override.yml
+
+# Logs
+*.log
+
+# Temporary files
+tmp/
+temp/
