@@ -1,9 +1,10 @@
 import logging
 
-from flask import Flask, request
+from flask import Flask, Response, request
 from flask_restful import Api, Resource
 from marshmallow import ValidationError
 
+from config import HOST, PORT
 from logger_config import setup_logging
 from models import (
     add_category,
@@ -18,6 +19,7 @@ from models import (
     update_good_by_id,
 )
 from schemas import CategorySchema, GoodSchema
+from swagger import OPENAPI_SPEC
 
 setup_logging()
 logger = logging.getLogger(__name__)
@@ -165,13 +167,48 @@ class Health(Resource):
         logger.info('GET /health returned ok')
         return {'status': 'ok'}, 200
 
+
+class OpenApiSpec(Resource):
+    def get(self):
+        logger.info('GET /openapi.json returned swagger spec')
+        return OPENAPI_SPEC, 200
+
+
+class SwaggerDocs(Resource):
+    def get(self):
+        logger.info('GET /docs returned swagger ui')
+        html = '''
+        <!doctype html>
+        <html lang="en">
+        <head>
+            <meta charset="utf-8">
+            <title>E-commerce Store API Docs</title>
+            <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
+        </head>
+        <body>
+            <div id="swagger-ui"></div>
+            <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+            <script>
+                SwaggerUIBundle({
+                    url: '/openapi.json',
+                    dom_id: '#swagger-ui'
+                });
+            </script>
+        </body>
+        </html>
+        '''
+        return Response(html, mimetype='text/html')
+
+
 api.add_resource(Goods, '/goods')
 api.add_resource(GoodDetail, '/goods/<int:good_id>')
 api.add_resource(Categories, '/categories')
 api.add_resource(CategoryGoods, '/categories/<int:category_id>/goods')
 api.add_resource(Health, '/', '/health')
+api.add_resource(OpenApiSpec, '/openapi.json')
+api.add_resource(SwaggerDocs, '/docs')
 
 
 if __name__ == '__main__':
     init_db()
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host=HOST, port=PORT, debug=True)

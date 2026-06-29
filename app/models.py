@@ -28,6 +28,25 @@ class Category:
         return getattr(self, item)
 
 
+DEFAULT_GOODS = [
+    Good(name='Clean Code', price=35, category_id=1),
+    Good(name='Python Crash Course', price=30, category_id=1),
+    Good(name='Flask Web Development', price=28, category_id=1),
+    Good(name='T-Shirt', price=15, category_id=2),
+    Good(name='Jeans', price=45, category_id=2),
+    Good(name='Hoodie', price=55, category_id=2),
+    Good(name='IPhone', price=500, category_id=3),
+    Good(name='Samsung', price=120, category_id=3),
+    Good(name='Huawei', price=40, category_id=3),
+    Good(name='Desk Lamp', price=25, category_id=4),
+    Good(name='Coffee Mug', price=10, category_id=4),
+    Good(name='Office Chair', price=150, category_id=4),
+    Good(name='Gift Card', price=25, category_id=5),
+    Good(name='Notebook', price=7, category_id=5),
+    Good(name='Backpack', price=60, category_id=5),
+]
+
+
 def get_connect() -> sqlite3.Connection:
     connection = sqlite3.connect(DATABASE)
     connection.execute('PRAGMA foreign_keys = ON')
@@ -238,6 +257,25 @@ def add_category(category: Category) -> Optional[Category]:
             category.name
         )
         return category
+
+
+def seed_default_goods() -> int:
+    created_count = 0
+
+    for good in DEFAULT_GOODS:
+        created_good = add_good(
+            Good(
+                name=good.name,
+                price=good.price,
+                category_id=good.category_id
+            )
+        )
+
+        if created_good is not None:
+            created_count += 1
+
+    logger.info('Default goods seeded: %s new goods', created_count)
+    return created_count
 
 
 def update_good_by_id(good_id: int, good: Good) -> Optional[Good]:

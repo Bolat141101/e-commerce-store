@@ -45,6 +45,19 @@ class StoreApiTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json['status'], 'ok')
 
+    def test_openapi_spec(self):
+        response = self.client.get('/openapi.json')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json['openapi'], '3.0.3')
+        self.assertIn('/goods', response.json['paths'])
+
+    def test_swagger_docs(self):
+        response = self.client.get('/docs')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b'swagger-ui', response.data)
+
     def test_create_category(self):
         response = self.client.post('/categories', json={'name': 'Laptops'})
 
@@ -165,6 +178,13 @@ class StoreApiTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json), 1)
         self.assertEqual(response.json[0]['name'], 'Phone')
+
+    def test_seed_default_goods(self):
+        created_count = models.seed_default_goods()
+        goods = models.get_all_goods()
+
+        self.assertEqual(created_count, 15)
+        self.assertEqual(len(goods), 15)
 
 
 if __name__ == '__main__':

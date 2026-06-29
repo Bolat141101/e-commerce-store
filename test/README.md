@@ -54,6 +54,12 @@ So every test starts with a clean database.
 
 ## What Is Tested
 
+Common endpoints:
+
+- health check
+- Swagger UI
+- OpenAPI JSON specification
+
 Categories:
 
 - get all categories
@@ -72,6 +78,7 @@ Goods:
 - update a good
 - delete a good
 - get goods by category
+- seed default goods
 
 ## Main Test Class
 
@@ -104,7 +111,7 @@ self.create_good(name='Phone', category_id=3)
 If everything works, the test result should end with:
 
 ```text
-Ran 13 tests
+Ran 17 tests
 
 OK
 ```

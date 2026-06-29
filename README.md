@@ -16,6 +16,9 @@ The project uses a simple Python stack:
 ## Features
 
 - health check endpoint
+- Swagger UI documentation
+- OpenAPI JSON specification
+- simple API client file
 - get all goods
 - get one good by `id`
 - create a good
@@ -34,6 +37,8 @@ ecom_store/
 ├── Dockerfile
 ├── .dockerignore
 ├── .gitignore
+├── client.py
+├── seed_data.py
 ├── requirements.txt
 ├── README.md
 ├── app/
@@ -42,6 +47,7 @@ ecom_store/
 │   ├── logger_config.py
 │   ├── models.py
 │   ├── schemas.py
+│   ├── swagger.py
 │   └── routes.py
 └── test/
     ├── README.md
@@ -60,6 +66,12 @@ ecom_store/
 
 `app/routes.py` contains Flask resources, API routes, and app startup code.
 
+`app/swagger.py` contains the OpenAPI specification.
+
+`client.py` is a small client for sending requests to the API.
+
+`seed_data.py` fills the database with default goods for every category.
+
 `test/test_routes.py` contains unit tests for the API.
 
 ## Run the Project
@@ -67,7 +79,7 @@ ecom_store/
 Go to the project folder:
 
 ```bash
-cd /Users/billcarter/Documents/my_project/ecom_store
+cd my_project/ecom_store
 ```
 
 Start the server:
@@ -79,7 +91,7 @@ Start the server:
 The API will be available at:
 
 ```text
-http://127.0.0.1:5000
+http://127.0.0.1:5001
 ```
 
 When the app starts, it creates the SQLite database and adds default categories:
@@ -110,6 +122,20 @@ The same response is also available at:
 GET /
 ```
 
+## Swagger Documentation
+
+Swagger UI is available at:
+
+```text
+http://127.0.0.1:5001/docs
+```
+
+OpenAPI JSON is available at:
+
+```text
+http://127.0.0.1:5001/openapi.json
+```
+
 ## Run with Docker
 
 Build the image:
@@ -121,13 +147,13 @@ docker build -t ecom-store-api .
 Run the container:
 
 ```bash
-docker run --rm -p 5000:5000 ecom-store-api
+docker run --rm -p 5001:5001 ecom-store-api
 ```
 
 Check that the app works:
 
 ```text
-http://127.0.0.1:5000/health
+http://127.0.0.1:5001/health
 ```
 
 If Docker Hub is not available, but you already have a local Python base image, you can override the base image:
@@ -136,6 +162,36 @@ If Docker Hub is not available, but you already have a local Python base image, 
 docker build --build-arg BASE_IMAGE=test_app_base:latest -t ecom-store-api .
 ```
 
+## Run the Client
+
+Start the API first:
+
+```bash
+.venv/bin/python app/routes.py
+```
+
+Then run the client in another terminal:
+
+```bash
+.venv/bin/python client.py
+```
+
+The client sends requests to:
+
+- `GET /health`
+- `GET /categories`
+- `GET /goods`
+
+## Seed Default Goods
+
+Run this command to add several goods for every category:
+
+```bash
+.venv/bin/python seed_data.py
+```
+
+The seed script is safe to run more than once. Existing goods are skipped by name.
+
 ## Good
 
 Example good:
@@ -143,7 +199,7 @@ Example good:
 ```json
 {
   "id": 1,
-  "name": "Phone",
+  "name": "IPhone",
   "price": 500.0,
   "category_id": 3
 }
@@ -170,6 +226,18 @@ Example category:
 
 ```http
 GET /health
+```
+
+### Get Swagger UI
+
+```http
+GET /docs
+```
+
+### Get OpenAPI JSON
+
+```http
+GET /openapi.json
 ```
 
 ### Get All Goods
@@ -297,6 +365,8 @@ Tests use a temporary SQLite database and do not change the main database file.
 ## What the Tests Check
 
 - health check
+- Swagger UI
+- OpenAPI JSON specification
 - getting all categories
 - creating a category
 - duplicate category error
@@ -310,3 +380,4 @@ Tests use a temporary SQLite database and do not change the main database file.
 - updating a good
 - deleting a good
 - getting goods by category
+- seeding default goods

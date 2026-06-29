@@ -11,7 +11,8 @@ COPY app/schemas.py .
 COPY app/routes.py .
 COPY app/logger_config.py .
 COPY app/config.py .
+COPY app/swagger.py .
 
-EXPOSE 5000
+EXPOSE 5001
 
 CMD ["python", "routes.py"]
